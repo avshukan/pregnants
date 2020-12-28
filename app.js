@@ -22,8 +22,10 @@ const app = express();
 // app.use(corsHeadersService);
 // app.use(mongoConnectorService);
 
+const getPregnantsInfoRouter = require('./routes/pregnants-info');
 
 app.use('/', indexRouter);
+app.use('/info', getPregnantsInfoRouter);
 
 app.use(function(req, res, next) {
   next(createError(404));
