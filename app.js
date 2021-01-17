@@ -1,7 +1,6 @@
 'use strict';
 const createError = require('http-errors');
 const express = require('express');
-const indexRouter = require('./routes/index');
 require('dotenv').config();
 
 
@@ -14,10 +13,13 @@ const app = express();
 // app.use(corsHeadersService);
 // app.use(mongoConnectorService);
 
-const getPregnantsInfoRouter = require('./routes/pregnants-info');
+const {
+  indexRouter,
+  pregnantsInfoRouter,
+} = require('./routes');
 
 app.use('/', indexRouter);
-app.use('/info', getPregnantsInfoRouter);
+app.use('/info', pregnantsInfoRouter);
 
 app.use(function(req, res, next) {
   next(createError(404));
