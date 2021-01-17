@@ -1,10 +1,14 @@
 'use strict';
+require('dotenv').config();
+const path = require('path');
+const hbs = require('hbs');
 const createError = require('http-errors');
 const express = require('express');
-require('dotenv').config();
 
 
 const app = express();
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
 
 // app.use(logger(':remote-addr - :remote-user  [:date[iso]]  :method  :status
 // :res[content-length]  HTTP/:http-version  :url  :referrer'));
