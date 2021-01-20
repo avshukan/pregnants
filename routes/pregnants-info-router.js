@@ -4,6 +4,7 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const fsPromises = fs.promises;
+const oracledb = require('oracledb');
 
 router.get('/', async function(req, res, next) {
   const { enp } = req.query;
@@ -17,7 +18,6 @@ router.get('/', async function(req, res, next) {
 
   const sqlFile = path.join(__dirname, '../sql', 'pregnants-info-by-enp.sql');
   const sqlQuery = await fsPromises.readFile(sqlFile, 'utf8');
-  let oracledb = require('oracledb');
   try {
     oracledb
       .getConnection({
