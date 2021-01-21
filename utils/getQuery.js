@@ -5,9 +5,9 @@ const fs = require('fs');
 const fsPromises = fs.promises;
 
 async function getQuery(filename) {
-    const sqlFile = path.join(sqlDir, filename);
-    const sqlQuery = await fsPromises.readFile(sqlFile, 'utf8');
-    return sqlQuery;
+  const sqlFile = path.join(sqlDir, filename);
+  const sqlQuery = await fsPromises.readFile(sqlFile, 'utf8');
+  return sqlQuery;
 }
 
 module.exports = getQuery;
