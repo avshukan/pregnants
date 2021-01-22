@@ -4,7 +4,7 @@ const router = express.Router();
 const path = require('path');
 const exceljs = require('exceljs');
 const oracledb = require('oracledb');
-const getQuery = require('../utils/getQuery');
+const getQuery = require('../utils/get-sql-query');
 
 const {
   ORACLE_DB_HOST,
