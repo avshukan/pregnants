@@ -2,6 +2,7 @@
 require('dotenv').config();
 require('http-errors');
 require('hbs');
+const logger = require('morgan');
 const path = require('path');
 const multer = require('multer');
 const expressHbs = require('express-handlebars');
@@ -11,18 +12,12 @@ const dest = path.join(__dirname, 'uploads');
 const multerUploader = multer({dest});
 
 const app = express();
-
-// app.use(logger(':remote-addr - :remote-user  [:date[iso]]  :method  :status
-// :res[content-length]  HTTP/:http-version  :url  :referrer'));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
-// app.use(corsHeadersService);
-
 const {
   pregnantsInfoRouter,
   processFileRouter,
 } = require('./routes');
 
+app.use(logger(':remote-addr - :remote-user  [:date[iso]]  :method  :status :res[content-length]  HTTP/:http-version  :url  :referrer'));
 app.use('/info', pregnantsInfoRouter);
 app.use('/process-file', multerUploader.single('filedata'), processFileRouter);
 
