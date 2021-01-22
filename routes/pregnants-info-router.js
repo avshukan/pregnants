@@ -16,7 +16,7 @@ router.get('/', async function(req, res, next) {
     ORACLE_DB_PASS,
   } = process.env;
 
-  const sqlFile = path.join(__dirname, '../sql', 'pregnants-info-by-enp.sql');
+  const sqlFile = path.join(__dirname, '..', 'sql', 'pregnants-info-by-enp.sql');
   const sqlQuery = await fsPromises.readFile(sqlFile, 'utf8');
   try {
     oracledb

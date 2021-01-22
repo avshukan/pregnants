@@ -19,7 +19,7 @@ router.get('/', showForm);
 router.post('/', processFile);
 
 function showForm(req, res, next) {
-  const hbs = './process-file.hbs';
+  const hbs = path.join('.', 'process-file.hbs');
   res.render(hbs);
 }
 
