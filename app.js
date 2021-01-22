@@ -19,12 +19,10 @@ const app = express();
 // app.use(corsHeadersService);
 
 const {
-  indexRouter,
   pregnantsInfoRouter,
   processFileRouter,
 } = require('./routes');
 
-app.use('/', indexRouter);
 app.use('/info', pregnantsInfoRouter);
 app.use('/process-file', multerUploader.single('filedata'), processFileRouter);
 
