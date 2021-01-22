@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const ExcelJS = require('exceljs');
+const exceljs = require('exceljs');
 const oracledb = require('oracledb');
 const getQuery = require('../utils/getQuery');
 
@@ -49,19 +49,9 @@ async function processFile(req, res, next) {
       user: ORACLE_DB_USER,
       password: ORACLE_DB_PASS,
     });
-    const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(path.join('uploads', filename));
-    const worksheet = workbook.getWorksheet(1);
-    worksheet.name = filename;
-    worksheet.getColumn(6).width = 15;
-    worksheet.getColumn(7).width = 15;
-    worksheet.getRow(1).getCell(6).value = 'DATE FROM';
-    worksheet.getRow(1).getCell(7).value = 'DATE TO';
-    await putDataFromSheetToDB(worksheet, connection);
-    await putDataFromDBToSheet(connection, worksheet);
-    const buffer = await workbook.xlsx.writeBuffer();
+    const result = await processData(filename, connection);
     res.attachment('result.xlsx');
-    res.send(buffer);
+    res.send(result);
   } catch (err) {
     console.error('catch', err);
     console.log('File loader error!');
@@ -78,6 +68,21 @@ async function processFile(req, res, next) {
     }
   }
   next();
+}
+
+async function processData(filename, connection) {
+  const workbook = new exceljs.Workbook();
+  await workbook.xlsx.readFile(path.join('uploads', filename));
+  const worksheet = workbook.getWorksheet(1);
+  worksheet.name = filename;
+  worksheet.getColumn(6).width = 15;
+  worksheet.getColumn(7).width = 15;
+  worksheet.getRow(1).getCell(6).value = 'DATE FROM';
+  worksheet.getRow(1).getCell(7).value = 'DATE TO';
+  await putDataFromSheetToDB(worksheet, connection);
+  await putDataFromDBToSheet(connection, worksheet);
+  const buffer = await workbook.xlsx.writeBuffer();
+  return buffer;
 }
 
 async function putDataFromSheetToDB(worksheet, connection) {
