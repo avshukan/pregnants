@@ -2,10 +2,14 @@
 require('dotenv').config();
 require('http-errors');
 require('hbs');
+const path = require('path');
+const multer = require('multer');
 const expressHbs = require('express-handlebars');
 const express = require('express');
-var multer = require('multer');
-var upload = multer({ dest: './uploads' });
+
+const dest = path.join(__dirname, 'uploads');
+const multerUploader = multer({dest});
+
 const app = express();
 
 // app.use(logger(':remote-addr - :remote-user  [:date[iso]]  :method  :status
@@ -22,7 +26,7 @@ const {
 
 app.use('/', indexRouter);
 app.use('/info', pregnantsInfoRouter);
-app.use('/process-file', upload.single('filedata'), processFileRouter);
+app.use('/process-file', multerUploader.single('filedata'), processFileRouter);
 
 // app.use(function(req, res, next) {
 //   next(createError(404));
