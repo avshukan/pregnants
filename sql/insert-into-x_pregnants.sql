@@ -1,0 +1,1 @@
+INSERT INTO X_SOMIAC.X_PREGNANTS(LOAD_FILENAME, ROW_ID, SURNAME, FIRSTNAME, LASTNAME, BIRTHDATE, SNILS) values (:load_filename, :row_id, :surname, :firstname, :lastname, :birthdate, :snils)
