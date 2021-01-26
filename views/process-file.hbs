@@ -1,13 +1,23 @@
-<h3>Сервис проверки беременных женщин</h3>
-<form action="/process-file" method="post" enctype="multipart/form-data" class="w-50">
-    <div class="mb-3">
-        <input class="form-control" type="file" id="formFile" name="filedata" >
+<div class="container-md">
+    <div class="row">
+        <div class="col text-center">
+            <h3>Сервис проверки беременных женщин</h3>
+        </div>
     </div>
-    <div class="input-group mb-3">
-        <span class="input-group-text">Код авторизации</span>
-        <input name="auth_code" type="text" class="form-control">
-    </div>
-    <div class="mb-3">
-        <button type="submit" class="btn btn-primary mb-3">Отправить</button>
-    </div>
-</form>
+    <form action="/process-file" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col border border-primary p-3 text-center">
+                    <div class="mb-3">
+                        <input class="form-control" type="file" id="formFile" name="filedata" >
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Код авторизации</span>
+                        <input name="auth_code" type="text" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary mb-3">Отправить</button>
+                    </div>
+            </div>
+        </div>
+    </form>
+</div>

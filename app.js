@@ -18,6 +18,8 @@ const {
 } = require('./routes');
 
 app.use(logger(':remote-addr - :remote-user  [:date[iso]]  :method  :status :res[content-length]  HTTP/:http-version  :url  :referrer'));
+app.use(express.static('node_modules/bootstrap/dist'));
+app.use(express.static('node_modules/jquery/dist'));
 app.use('/info', pregnantsInfoRouter);
 app.use('/process-file', multerUploader.single('filedata'), processFileRouter);
 
