@@ -99,7 +99,7 @@ const xlsxHandler = (respond) => async(data) => {
     'Неделя посещения',
   ];
   const workbook = new exceljs.Workbook();
-  const worksheet = workbook.addWorksheet('All Last Preganancies');
+  const worksheet = workbook.addWorksheet('Preganants List');
   // worksheet.getColumn(6).width = 15;
   // worksheet.getRow(1).getCell(6).value = 'DATE FROM';
   const header = worksheet.getRow(1);
