@@ -40,18 +40,22 @@ supertable AS (
   	    WHEN card.DATE_IN - pregnancy.BEGIN_DATE <= 12*7
   	      THEN 'ДА'
   	    ELSE 'НЕТ'
-      END AS EARLY_FACT														-- Факт постановки на учёт на ранних сроках
-    , card.DATE_IN - pregnancy.BEGIN_DATE AS GESTATIONAL_AGE_IN_DAYS		-- Cрок в днях на момент заведения карты
-    , 1 + TRUNC((card.DATE_IN - pregnancy.BEGIN_DATE)/7) AS GESTATIONAL_AGE_IN_WEEKS		-- Cрок в неделях на момент заведения карты
-    , TO_CHAR(card.DATE_IN, 'DD.MM.YYYY') AS CARD_DATE_START		        -- Дата открытия карты беременной
-    , TO_CHAR(card.DATE_OUT, 'DD.MM.YYYY') AS CARD_DATE_END					-- Дата закрытия карты беременной
-    , TO_CHAR(pregnancy.BEGIN_DATE, 'DD.MM.YYYY') AS PREGNANCY_DATE_START	-- Дата начала срока
-    , TO_CHAR(pregnancy.END_DATE, 'DD.MM.YYYY') AS PREGNANCY_DATE_END		-- Дата окончания срока
-    , TO_CHAR(pregnancy.PLAN_END_DATE, 'DD.MM.YYYY') AS PLAN_DATE_END		-- Плановая дата окончания срока
-    , reason.NAME AS REASON  	                                        	-- Причина закрытия индивидуальной карты
-    , po.PO_NAME															-- Исход беременности
-    , lpu.LPU_NAME      													-- ЛПУ
-    , pregnancy_weeks.VISIT_INFO AS VISIT_INFO 								-- Неделя посещения
+      END AS EARLY_FACT														-- Факт постановки на учёт на ранних сроках                                                -- Факт постановки на учёт на ранних сроках
+    , card.DATE_IN - pregnancy.BEGIN_DATE AS GESTATIONAL_AGE_IN_DAYS        -- Cрок в днях на момент заведения карты
+    , 1 + TRUNC((card.DATE_IN - pregnancy.BEGIN_DATE)/7)
+        AS GESTATIONAL_AGE_IN_WEEKS                                         -- Cрок в неделях на момент заведения карты
+    , TO_CHAR(card.DATE_IN, 'DD.MM.YYYY') AS CARD_DATE_START                -- Дата открытия карты беременной
+    , TO_CHAR(card.DATE_OUT, 'DD.MM.YYYY') AS CARD_DATE_END                 -- Дата закрытия карты беременной
+    , TO_CHAR(pregnancy.BEGIN_DATE, 'DD.MM.YYYY') AS PREGNANCY_DATE_START   -- Дата начала срока
+    , TO_CHAR(pregnancy.END_DATE, 'DD.MM.YYYY') AS PREGNANCY_DATE_END       -- Дата окончания срока
+    , TO_CHAR(
+    	  NVL(pregnancy.PLAN_END_DATE, pregnancy.BEGIN_DATE + 280)
+    	, 'DD.MM.YYYY'
+	  ) AS PLAN_DATE_END                                                      -- Плановая дата окончания срока
+    , reason.NAME AS REASON                                                 -- Причина закрытия индивидуальной карты
+    , po.PO_NAME                                                            -- Исход беременности
+    , lpu.LPU_NAME                                                          -- ЛПУ
+    , pregnancy_weeks.VISIT_INFO AS VISIT_INFO                              -- Неделя посещения
   FROM D_PREGNANT_CARDS card
   INNER JOIN D_AGENTS agent
     ON agent.ID = card.AGENT
