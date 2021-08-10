@@ -15,6 +15,7 @@ const app = express();
 const {
   pregnantsInfoRouter,
   processFileRouter,
+  getPregnantsRouter,
 } = require('./routes');
 
 app.use(logger(
@@ -23,6 +24,7 @@ app.use(logger(
 app.use(express.static('node_modules/bootstrap/dist'));
 app.use(express.static('node_modules/jquery/dist'));
 app.use('/info', pregnantsInfoRouter);
+app.use('/get-pregnants-list', getPregnantsRouter);
 app.use('/process-file', multerUploader.single('filedata'), processFileRouter);
 
 // app.use(function(req, res, next) {
