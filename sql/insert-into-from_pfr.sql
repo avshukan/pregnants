@@ -1,0 +1,1 @@
+INSERT INTO X_SHUKAN.FROM_PFR ("File", "Row", SNILS) values (:load_filename, :row_id, :snils)
