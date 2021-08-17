@@ -1,4 +1,27 @@
 WITH
+docs AS (
+  SELECT PID, DOC
+  FROM (
+    SELECT 
+        PID
+      , PD_SER || ' ' || PD_NUMB DOC
+      , ROW_NUMBER() OVER (PARTITION BY PID ORDER BY PD_WHEN DESC) R
+    FROM dev.D_AGENT_PERSDOCS dap
+  )
+  WHERE 1 = 1 
+    AND R = 1
+),
+contacts AS (	
+  SELECT 
+      PID
+    , listagg(contact, ', ') WITHIN GROUP (ORDER BY id) AS CONTACTS_LIST
+  FROM (
+    SELECT *
+    FROM dev.D_AGENT_CONTACTS
+    WHERE contact NOT LIKE '%@%'
+  )
+  GROUP BY PID
+),
 pregnancy_diary AS (
   SELECT
       PREGNANCY.ID PREGNANCY_ID
@@ -56,6 +79,8 @@ supertable AS (
     , po.PO_NAME                                                            -- Исход беременности
     , lpu.LPU_NAME                                                          -- ЛПУ
     , pregnancy_weeks.VISIT_INFO AS VISIT_INFO                              -- Неделя посещения
+    , docs.DOC                                                              -- Паспорт
+    , contacts.CONTACTS_LIST                                                -- Контакты (телефоны)
   FROM D_PREGNANT_CARDS card
   INNER JOIN D_AGENTS agent
     ON agent.ID = card.AGENT
@@ -71,6 +96,10 @@ supertable AS (
     ON lpu.ID = card.LPU_IN
   LEFT JOIN pregnancy_weeks
     ON pregnancy_weeks.PREGNANCY_ID = PREGNANCY.ID
+  LEFT JOIN docs
+    ON docs.PID = agent.ID
+  LEFT JOIN contacts
+    ON contacts.PID = agent.ID
   WHERE 1 = 1
     AND lpu.ID != 75427859 -- СОМИАЦ
     AND lpu.ID != 173922227 -- "Тестовое МО"
@@ -105,6 +134,8 @@ resulttable AS (
     , PO_NAME					-- Исход беременности
     , LPU_NAME      			-- ЛПУ
     , VISIT_INFO 				-- Неделя посещения
+    , DOC       				-- Паспорт
+    , CONTACTS_LIST             -- Контакты (телефоны)
   FROM supertable
   WHERE rownumber = 1 -- последняя беременность
 )
@@ -127,6 +158,8 @@ SELECT
     , PO_NAME
     , LPU_NAME
     , VISIT_INFO
+    , DOC
+    , CONTACTS_LIST
 FROM resulttable
 WHERE 1 = 1
   AND ROWNUM < 5
