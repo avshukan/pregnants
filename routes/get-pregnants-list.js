@@ -97,6 +97,8 @@ const xlsxHandler = (respond) => async(data) => {
     'Исход беременности',
     'ЛПУ',
     'Неделя посещения',
+    'Документы',
+    'Контакты',
   ];
   const workbook = new exceljs.Workbook();
   const worksheet = workbook.addWorksheet('Preganants List');
