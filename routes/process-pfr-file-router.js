@@ -1,6 +1,6 @@
 'use strict';
 const HEADER_ROWS_COUNT = 5;
-const SIDE_COLS_COUNT = 5;
+const SIDE_COLS_COUNT = 6;
 const express = require('express');
 const router = express.Router();
 const path = require('path');
@@ -77,7 +77,7 @@ async function processPfrData(filename, connection) {
   const workbook = new exceljs.Workbook();
   await workbook.xlsx.readFile(path.join('uploads', filename));
   const worksheet = workbook.getWorksheet(1);
-  // worksheet.name = filename;
+  worksheet.name = filename;
   // worksheet.getColumn(6).width = 15;
   // worksheet.getColumn(7).width = 15;
   // worksheet.getRow(1).getCell(6).value = 'DATE FROM';
@@ -142,7 +142,7 @@ async function putPfrDataFromDBToSheet(connection, worksheet) {
   console.log('rows', selectResult.rows);
   selectResult.rows.forEach((row, row_index) => {
     columns.forEach((col, col_index) => {
-      if (col_index > 1)
+      if (col_index > 0)
         worksheet
           .getRow(row_index + HEADER_ROWS_COUNT + 1)
           .getCell(col_index + SIDE_COLS_COUNT).value = row[col_index];
