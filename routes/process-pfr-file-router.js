@@ -27,14 +27,6 @@ function showForm(req, res, next) {
 
 async function processFile(req, res, next) {
   const { file } = req;
-  // const { body, file } = req;
-
-  // if (!body || !body.auth_code || (body.auth_code !== AUTH_CODE)) {
-  //   console.log('AUTH_CODE error!');
-  //   res.send('Неверный код авторизации');
-  //   next();
-  //   return;
-  // }
 
   if (!file || !file.filename) {
     console.log('File loader error!');
@@ -78,10 +70,6 @@ async function processPfrData(filename, connection) {
   await workbook.xlsx.readFile(path.join('uploads', filename));
   const worksheet = workbook.getWorksheet(1);
   worksheet.name = filename;
-  // worksheet.getColumn(6).width = 15;
-  // worksheet.getColumn(7).width = 15;
-  // worksheet.getRow(1).getCell(6).value = 'DATE FROM';
-  // worksheet.getRow(1).getCell(7).value = 'DATE TO';
   await putPfrDataFromSheetToDB(worksheet, connection);
   await putPfrDataFromDBToSheet(connection, worksheet);
   const buffer = await workbook.xlsx.writeBuffer();
@@ -140,6 +128,19 @@ async function putPfrDataFromDBToSheet(connection, worksheet) {
   const selectQuery = await getQuery('select-from_pfr-by-filename.sql');
   const selectResult = await connection.execute(selectQuery, [worksheet.name]);
   worksheet.spliceRows(1, HEADER_ROWS_COUNT, []);
+  const header = worksheet.getRow(1);
+  header.getCell(1).value = '№';
+  header.getCell(2).value = 'Фамилия';
+  header.getCell(3).value = 'Имя';
+  header.getCell(4).value = 	'Отчество';
+  header.getCell(5).value = 'СНИЛС';
+  header.getCell(6).value = 'Медицинская организация';
+  columns.forEach((item, index) => {
+    if (index > 0) {
+      header.getCell(index + SIDE_COLS_COUNT).value = item;
+      worksheet.getColumn(index + SIDE_COLS_COUNT).width = 15;
+    }
+  });
   selectResult.rows.forEach((row, row_index) => {
     columns.forEach((col, col_index) => {
       if (col_index > 0)
@@ -148,6 +149,17 @@ async function putPfrDataFromDBToSheet(connection, worksheet) {
           .getCell(col_index + SIDE_COLS_COUNT).value = row[col_index];
     });
   });
+  for (let row = 1; row <= selectResult.rows.length + 1; row = row + 1){
+    for (let col = 1; col <= HEADER_ROWS_COUNT + columns.length; col = col + 1){
+      worksheet.getRow(row).getCell(col).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'},
+      };
+    }
+  }
+
 }
 
 module.exports = router;
