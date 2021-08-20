@@ -139,12 +139,12 @@ async function putPfrDataFromDBToSheet(connection, worksheet) {
   ];
   const selectQuery = await getQuery('select-from_pfr-by-filename.sql');
   const selectResult = await connection.execute(selectQuery, [worksheet.name]);
-  console.log('rows', selectResult.rows);
+  worksheet.spliceRows(1, HEADER_ROWS_COUNT, []);
   selectResult.rows.forEach((row, row_index) => {
     columns.forEach((col, col_index) => {
       if (col_index > 0)
         worksheet
-          .getRow(row_index + HEADER_ROWS_COUNT + 1)
+          .getRow(row_index + 2)
           .getCell(col_index + SIDE_COLS_COUNT).value = row[col_index];
     });
   });
