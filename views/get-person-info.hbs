@@ -1,0 +1,79 @@
+<div class="container-md">
+    <div class="row my-1">
+        <div class="col text-center">
+            <h3>Сервис проверки беременных женщин</h3>
+        </div>
+    </div>
+    <form name="getPersonInfo" action="" method="post" enctype="multipart/form-data">
+        <div class="row my-1">
+            <div class="col border border-primary p-3 text-center">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="min-width: 160px;">СНИЛС</span>
+                    </div>
+                    <input name="snils" type="text" class="form-control">
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="min-width: 160px;">Фамилия</span>
+                    </div>
+                    <input name="f" type="text" class="form-control">
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="min-width: 160px;">Имя</span>
+                    </div>
+                    <input name="i" type="text" class="form-control">
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="min-width: 160px;">Отчество</span>
+                    </div>
+                    <input name="o" type="text" class="form-control">
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="min-width: 160px;">Дата рождения</span>
+                    </div>
+                    <input name="dr" type="text" class="form-control" disabled>
+                </div>
+                <div class="panel-body">
+                    <button type="submit" class="btn btn-sm btn-primary">Найти</button>
+                    <a id="reset" class="btn btn-sm btn-primary">Очистить</a>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row my-1">
+        <div class="col border border-primary p-3 text-center">
+            <table class="table table-condensed table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>СНИЛС</th>
+                        <th>Фамилия</th>
+                        <th>Имя</th>
+                        <th>Отчество</th>
+                        <th>Дата рождения</th>
+                        <th>Факт постановки на учёт на ранних сроках</th>
+                        <th>Cрок в днях на момент заведения карты</th>
+                        <th>Cрок в неделях на момент заведения карты</th>
+                        <th>Дата открытия карты беременной</th>
+                        <th>Дата закрытия карты беременной</th>
+                        <th>Дата начала срока</th>
+                        <th>Дата окончания срока</th>
+                        <th>Плановая дата окончания срока</th>
+                        <th>Причина закрытия индивидуальной карты</th>
+                        <th>Исход беременности</th>
+                        <th>ЛПУ</th>
+                        <th>Неделя посещения</th>
+                        <th>Паспорт</th>
+                        <th>Контакты (телефоны)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
