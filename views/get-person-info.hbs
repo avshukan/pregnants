@@ -23,7 +23,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" style="min-width: 160px;">Имя</span>
                     </div>
-                    <input name="i" type="text" class="form-control">
+                    <input name="i" type="text" class="form-control" value="Влада">
                 </div>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
@@ -55,7 +55,8 @@
                         <th>Имя</th>
                         <th>Отчество</th>
                         <th>Дата рождения</th>
-                        <th>Факт постановки на учёт на ранних сроках</th>
+                        <th>Подробно</th>
+                        {{!-- <th>Факт постановки на учёт на ранних сроках</th>
                         <th>Cрок в днях на момент заведения карты</th>
                         <th>Cрок в неделях на момент заведения карты</th>
                         <th>Дата открытия карты беременной</th>
@@ -68,7 +69,7 @@
                         <th>ЛПУ</th>
                         <th>Неделя посещения</th>
                         <th>Паспорт</th>
-                        <th>Контакты (телефоны)</th>
+                        <th>Контакты (телефоны)</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -77,3 +78,19 @@
         </div>
     </div>
 </div>
+
+<!-- Подключаем скрипт получения информации по api -->
+<script src="getPersonInfo.js"></script>
+<script>
+    // отправка формы
+    document.forms["getPersonInfo"].addEventListener("submit", e => {
+        e.preventDefault();
+        const form = document.forms["getPersonInfo"];
+        const snils = form.elements["snils"].value;
+        const f = form.elements["f"].value;
+        const i = form.elements["i"].value;
+        const o = form.elements["o"].value;
+        const dr = form.elements["dr"].value;
+        getPersonInfo(snils, f, i, o, dr);
+    });
+</script>
