@@ -83,14 +83,7 @@
 <script src="getPersonInfo.js"></script>
 <script>
     // отправка формы
-    document.forms["getPersonInfo"].addEventListener("submit", e => {
-        e.preventDefault();
-        const form = document.forms["getPersonInfo"];
-        const snils = form.elements["snils"].value;
-        const f = form.elements["f"].value;
-        const i = form.elements["i"].value;
-        const o = form.elements["o"].value;
-        const dr = form.elements["dr"].value;
-        getPersonInfo(snils, f, i, o, dr);
-    });
+    document.forms["getPersonInfo"].addEventListener("submit", findListener);
+    // сброс значений формы
+    document.getElementById("reset").onclick = resetOnClick;
 </script>

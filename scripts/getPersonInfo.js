@@ -14,10 +14,32 @@ const INNER_TABLE_FIELDS = [
   'Причина закрытия индивидуальной карты',
   'Исход беременности',
   'ЛПУ',
-  'Неделя посещения',
+  'Информация о посещениях',
   'Паспорт',
   'Контакты (телефоны)',
 ];
+
+function findListener(event) {
+  event.preventDefault();
+  const form = document.forms['getPersonInfo'];
+  const snils = form.elements['snils'].value;
+  const f = form.elements['f'].value;
+  const i = form.elements['i'].value;
+  const o = form.elements['o'].value;
+  const dr = form.elements['dr'].value;
+  getPersonInfo(snils, f, i, o, dr);
+}
+
+function resetOnClick(event) {
+  // event.preventDefault();
+  const form = document.forms['getPersonInfo'];
+  form.reset();
+  form.elements['snils'].value = '';
+  form.elements['f'].value = '';
+  form.elements['i'].value = '';
+  form.elements['o'].value = '';
+  form.elements['dr'].value = '';
+}
 
 async function getPersonInfo(snils, f, i, o, dr) {
   const url = `/get-person-info/api?snils=${snils}&f=${f}&i=${i}&o=${o}&dr=${dr}`;
@@ -91,4 +113,6 @@ function get_td(value) {
   return td;
 }
 
-module.exports = getPersonInfo;
+module.exports.getPersonInfo = getPersonInfo;
+module.exports.findListener = findListener;
+module.exports.resetOnClick = resetOnClick;
