@@ -96,25 +96,32 @@ supertable AS (
 ),
 resulttable AS (
   SELECT
-      SURNAME					-- Фамилия беременной
-    , FIRSTNAME					-- Имя беременной
-    , LASTNAME					-- Отчество беременной
-    , BIRTHDATE					-- ДР беременной
---    , SNILS11 					-- СНИЛС как 11 символов
-    , SNILS   					-- СНИЛС
-    , PREGNANCY_REG_DATE        -- Дата постановки на учёт
-    , CARD_DATE_START		    -- Дата открытия карты беременной
-    , CARD_DATE_END				-- Дата закрытия карты беременной
-    , PREGNANCY_DATE_START		-- Дата начала срока
-    , PREGNANCY_DATE_END		-- Дата окончания срока
-    , PREGNANCY_WEEK_12         -- Срок 12 недель
-    , PLAN_DATE_END				-- Плановая дата окончания срока
-    , REASON  	                -- Причина закрытия индивидуальной карты
-    , PO_NAME					-- Исход беременности
-    , LPU_NAME      			-- ЛПУ
-    , VISIT_INFO 				-- Неделя посещения
-    , DOC       				-- Паспорт
-    , CONTACTS_LIST             -- Контакты (телефоны)
+      SURNAME                -- Фамилия беременной
+    , FIRSTNAME              -- Имя беременной
+    , LASTNAME               -- Отчество беременной
+    , BIRTHDATE              -- ДР беременной
+    , '?' BIRTHPLACE         -- Место рождения
+    , '?' ADDRESS_REG        -- Место регистрации
+    , '?' ADDRESS_FACT       -- Место фактического проживания
+--    , SNILS11              -- СНИЛС как 11 символов
+    , SNILS                  -- СНИЛС
+    , PREGNANCY_REG_DATE     -- Дата постановки на учёт
+    , '' PREGNANCY_REG_END   -- Дата снятия с учёта
+    , CARD_DATE_START        -- Дата открытия карты беременной
+    , CARD_DATE_END          -- Дата закрытия карты беременной
+    , PREGNANCY_DATE_START   -- Дата начала срока
+    , PREGNANCY_DATE_END     -- Дата окончания срока
+    , PREGNANCY_WEEK_12      -- Срок 12 недель
+    , PLAN_DATE_END          -- Плановая дата окончания срока
+    , REASON                 -- Причина закрытия индивидуальной карты
+    , PO_NAME                -- Исход беременности
+    , LPU_NAME               -- ЛПУ
+    , VISIT_INFO             -- Неделя посещения
+    , DOC                    -- Паспорт
+    , CONTACTS_LIST          -- Контакты (телефоны)
+    , 'НЕТ' FLAG13           -- Отметка о согласии в соответствии с п.13 Соглашения
+    , 'НЕТ' FLAG14           -- Отметка о согласии в соответствии с п.14 Соглашения
+    , 'НЕТ' FLAG15           -- Отметка о согласии в соответствии с п.15 Соглашения
   FROM supertable
   WHERE 1 = 1
     AND (SURNAME IS NOT NULL)
@@ -126,17 +133,23 @@ resulttable AS (
 )
 SELECT
       ROWNUM
+    , SNILS
     , SURNAME
     , FIRSTNAME
     , LASTNAME
     , BIRTHDATE
-    , SNILS
+    , BIRTHPLACE
+    , DOC
+    , ADDRESS_REG
+    , ADDRESS_FACT
     , PREGNANCY_REG_DATE
     , PREGNANCY_WEEK_12
     , PLAN_DATE_END
-    , VISIT_INFO
-    , DOC
+    , PREGNANCY_REG_END
     , CONTACTS_LIST
+    , FLAG13
+    , FLAG14
+    , FLAG15
 FROM resulttable
 WHERE 1 = 0
    OR ROWNUM <= :limit
