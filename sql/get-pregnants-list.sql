@@ -125,11 +125,11 @@ resulttable AS (
   FROM supertable
   WHERE 1 = 1
     AND (SURNAME IS NOT NULL)
-	AND (PREGNANCY_COUNTER <= :r OR :r IS NULL)
-	AND (:snils = SNILS11 OR :snils IS NULL)
-  	AND (LOWER(:f) = LOWER(SURNAME) OR :f = '' OR :f IS NULL)
-  	AND (LOWER(:i) = LOWER(FIRSTNAME) OR :i = '' OR :i IS NULL)
-  	AND (LOWER(:o) = LOWER(LASTNAME) OR :o = '' OR :o IS NULL)
+    AND (PREGNANCY_COUNTER <= :r OR :r IS NULL)
+    AND (:snils = SNILS11 OR :snils IS NULL)
+  	AND (LOWER(:f) = LOWER(SURNAME) OR :f IS NULL)
+  	AND (LOWER(:i) = LOWER(FIRSTNAME) OR :i IS NULL)
+  	AND (LOWER(:o) = LOWER(LASTNAME) OR :o IS NULL)
 )
 SELECT
       ROWNUM
