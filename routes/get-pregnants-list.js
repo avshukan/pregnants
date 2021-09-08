@@ -5,13 +5,20 @@ const exceljs = require('exceljs');
 const getListApi = require('../api/get-list-api.js');
 
 
+router.get('/xlsx', async function(req, res, next) {
+  const {query} = req;
+  const info = await getListApi(query);
+  xlsxHandler(res)(info);
+});
+
 router.get('/all/json', async function(req, res, next) {
   const info = await getListApi({});
   jsonHandler(res)(info);
 });
 
 router.get('/all/xlsx', async function(req, res, next) {
-  const info = await getListApi({});
+  const {query} = req;
+  const info = await getListApi(query);
   xlsxHandler(res)(info);
 });
 
@@ -70,6 +77,7 @@ const xlsxHandler = (respond) => async(data) => {
   });
   data.forEach((row, row_index) => {
     columns.forEach((col, col_index) => {
+      console.log('row[col_index];', row[col_index]);
       worksheet.getRow(row_index + 2).getCell(col_index + 1).value = row[col_index];
     });
   });

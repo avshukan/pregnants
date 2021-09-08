@@ -3,20 +3,18 @@ const VISIBLE_TD_COUNT = 5;
 const HIDE_LINK_TEXT = 'Hide';
 const SHOW_LINK_TEXT = 'Show';
 const INNER_TABLE_FIELDS = [
-  'Факт постановки на учёт на ранних сроках',
-  'Cрок в днях на момент заведения карты',
-  'Cрок в неделях на момент заведения карты',
-  'Дата открытия карты беременной',
-  'Дата закрытия карты беременной',
-  'Дата начала срока',
-  'Дата окончания срока',
+  'Место рождения',
+  'Документы',
+  'Место регистрации',
+  'Место фактического проживания',
+  'Дата постановки на учёт',
+  'Срок 12 недель',
   'Плановая дата окончания срока',
-  'Причина закрытия индивидуальной карты',
-  'Исход беременности',
-  'ЛПУ',
-  'Информация о посещениях',
-  'Паспорт',
-  'Контакты (телефоны)',
+  'Дата снятия с учёта',
+  'Контакты',
+  'Отметка о согласии в соответствии с п.13 Соглашения',
+  'Отметка о согласии в соответствии с п.14 Соглашения',
+  'Отметка о согласии в соответствии с п.15 Соглашения',
 ];
 
 function findListener(event) {
@@ -30,15 +28,27 @@ function findListener(event) {
   getPersonInfo(snils, f, i, o, dr);
 }
 
+function downloadOnClick(event) {
+  event.preventDefault();
+  const form = document.forms['getPersonInfo'];
+  const snils = form.elements['snils'].value;
+  const f = form.elements['f'].value;
+  const i = form.elements['i'].value;
+  const o = form.elements['o'].value;
+  const dr = form.elements['dr'].value;
+  const url = `/get-pregnants-list/xlsx?snils=${snils}&f=${f}&i=${i}&o=${o}&dr=${dr}`;
+  window.open(url, '_blank').focus();
+}
+
 function resetOnClick(event) {
-  // event.preventDefault();
+  event.preventDefault();
   const form = document.forms['getPersonInfo'];
   form.reset();
   form.elements['snils'].value = '';
   form.elements['f'].value = '';
   form.elements['i'].value = '';
   form.elements['o'].value = '';
-  form.elements['dr'].value = '';
+  form.elements['dr'].value = '';у
 }
 
 async function getPersonInfo(snils, f, i, o, dr) {
@@ -91,7 +101,7 @@ function tr_hidden(item, id) {
   Object.keys(item).filter((value, index) => index > VISIBLE_TD_COUNT).forEach((key, index) => {
     const tr = document.createElement('tr');
     tr.append(get_td(INNER_TABLE_FIELDS[index]));
-    tr.append(get_td(item[key]));
+    tr.append(get_td(item[key] === null ? '' : item[key]));
     tbody.append(tr);
   });
   const table = document.createElement('table');
@@ -115,4 +125,5 @@ function get_td(value) {
 
 module.exports.getPersonInfo = getPersonInfo;
 module.exports.findListener = findListener;
+module.exports.downloadOnClick = downloadOnClick;
 module.exports.resetOnClick = resetOnClick;
