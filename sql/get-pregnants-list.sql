@@ -81,26 +81,26 @@ supertable AS (
     , TO_CHAR(agent.BIRTHDATE, 'DD.MM.YYYY') AS BIRTHDATE                     -- ДР беременной
     , agent.BIRTHPLACE                                                        -- Место рождения
     , agent.ENP                                                               -- ЕНП
-    , SNILS AS SNILS11
-    , DECODE(SNILS,
+    , agent.SNILS AS SNILS11
+    , DECODE(agent.SNILS,
         NULL,
         NULL,
-        SUBSTR(TO_CHAR(SNILS), 1, 3) || '-'
-        || SUBSTR(TO_CHAR(SNILS), 4, 3)  || '-'
-        || SUBSTR(TO_CHAR(SNILS), 7, 3)  || ' '
-        || SUBSTR(TO_CHAR(SNILS), 10, 2)
+        SUBSTR(TO_CHAR(agent.SNILS), 1, 3) || '-'
+        || SUBSTR(TO_CHAR(agent.SNILS), 4, 3)  || '-'
+        || SUBSTR(TO_CHAR(agent.SNILS), 7, 3)  || ' '
+        || SUBSTR(TO_CHAR(agent.SNILS), 10, 2)
       ) AS SNILS   		                              												  -- СНИЛС
     , TO_CHAR(pregnancy.REG_DATE, 'DD.MM.YYYY') AS PREGNANCY_REG_DATE         -- Дата постановки на учёт
-    , TO_CHAR(card.DATE_IN, 'DD.MM.YYYY') AS CARD_DATE_START                  -- Дата открытия карты беременной
-    , TO_CHAR(card.DATE_OUT, 'DD.MM.YYYY') AS CARD_DATE_END                   -- Дата закрытия карты беременной
+--    , TO_CHAR(card.DATE_IN, 'DD.MM.YYYY') AS CARD_DATE_START                  -- Дата открытия карты беременной
+--    , TO_CHAR(card.DATE_OUT, 'DD.MM.YYYY') AS CARD_DATE_END                   -- Дата закрытия карты беременной
     , TO_CHAR(pregnancy.BEGIN_DATE, 'DD.MM.YYYY') AS PREGNANCY_DATE_START     -- Дата начала срока
     , TO_CHAR(pregnancy.END_DATE, 'DD.MM.YYYY') AS PREGNANCY_DATE_END         -- Дата окончания срока
     , TO_CHAR(pregnancy.BEGIN_DATE + 7*12, 'DD.MM.YYYY') AS PREGNANCY_WEEK_12 -- Срок 12 недель
     , TO_CHAR(pregnancy.PLAN_END_DATE, 'DD.MM.YYYY') AS PLAN_DATE_END         -- Плановая дата окончания срока
-    , reason.NAME AS REASON                                                   -- Причина закрытия индивидуальной карты
-    , po.PO_NAME                                                              -- Исход беременности
+--    , reason.NAME AS REASON                                                   -- Причина закрытия индивидуальной карты
+--    , po.PO_NAME                                                              -- Исход беременности
     , lpu.LPU_NAME                                                            -- ЛПУ
-    , pregnancy_weeks.VISIT_INFO AS VISIT_INFO                                -- Информация о посещениях
+--    , pregnancy_weeks.VISIT_INFO AS VISIT_INFO                                -- Информация о посещениях
     , docs.DOC                                                                -- Паспорт
     , contacts.CONTACTS_LIST                                                  -- Контакты (телефоны)
     , address_r.ADR ADDRESS_REG                                               -- Место регистрации
@@ -110,16 +110,14 @@ supertable AS (
     ON agent.ID = card.AGENT
   INNER JOIN D_AGENT_PREGNANCY pregnancy
     ON pregnancy.id = card.PREGNANCY
-  LEFT JOIN D_PREGC_OUT_REASONS reason
-    ON reason.ID = card.OUT_REASON
-  LEFT JOIN D_PREGC_OUT_REASONS reason
-    ON reason.ID = card.OUT_REASON
-  LEFT JOIN D_PREGNANCY_OUTCOMES po -- Исходы беременностей (хроникальный)
-    ON po.ID = pregnancy.PREG_OUTCOME
+--  LEFT JOIN D_PREGC_OUT_REASONS reason
+--    ON reason.ID = card.OUT_REASON
+--  LEFT JOIN D_PREGNANCY_OUTCOMES po -- Исходы беременностей (хроникальный)
+--    ON po.ID = pregnancy.PREG_OUTCOME
   LEFT JOIN D_LPUDICT lpu
     ON lpu.ID = card.LPU_IN
-  LEFT JOIN pregnancy_weeks
-    ON pregnancy_weeks.PREGNANCY_ID = PREGNANCY.ID
+--  LEFT JOIN pregnancy_weeks
+--    ON pregnancy_weeks.PREGNANCY_ID = PREGNANCY.ID
   LEFT JOIN docs
     ON docs.PID = agent.ID
   LEFT JOIN contacts
@@ -133,7 +131,7 @@ supertable AS (
     AND lpu.ID != 173922227 -- "Тестовое МО"
 ),
 resulttable AS (
-  SELECT
+  SELECT DISTINCT
       SURNAME                -- Фамилия беременной
     , FIRSTNAME              -- Имя беременной
     , LASTNAME               -- Отчество беременной
@@ -145,16 +143,16 @@ resulttable AS (
     , SNILS                  -- СНИЛС
     , PREGNANCY_REG_DATE     -- Дата постановки на учёт
     , '' PREGNANCY_REG_END   -- Дата снятия с учёта
-    , CARD_DATE_START        -- Дата открытия карты беременной
-    , CARD_DATE_END          -- Дата закрытия карты беременной
+--    , CARD_DATE_START        -- Дата открытия карты беременной
+--    , CARD_DATE_END          -- Дата закрытия карты беременной
     , PREGNANCY_DATE_START   -- Дата начала срока
     , PREGNANCY_DATE_END     -- Дата окончания срока
     , PREGNANCY_WEEK_12      -- Срок 12 недель
     , PLAN_DATE_END          -- Плановая дата окончания срока
-    , REASON                 -- Причина закрытия индивидуальной карты
-    , PO_NAME                -- Исход беременности
-    , LPU_NAME               -- ЛПУ
-    , VISIT_INFO             -- Неделя посещения
+--    , REASON                 -- Причина закрытия индивидуальной карты
+--    , PO_NAME                -- Исход беременности
+--    , LPU_NAME               -- ЛПУ
+--    , VISIT_INFO             -- Неделя посещения
     , DOC                    -- Паспорт
     , CONTACTS_LIST          -- Контакты (телефоны)
     , 'НЕТ' FLAG13           -- Отметка о согласии в соответствии с п.13 Соглашения
@@ -163,11 +161,12 @@ resulttable AS (
   FROM supertable
   WHERE 1 = 1
     AND (SURNAME IS NOT NULL)
-    AND (PREGNANCY_COUNTER <= :r OR :r IS NULL)
-    AND (:snils = SNILS11 OR :snils IS NULL)
-  	AND (LOWER(:f) = LOWER(SURNAME) OR :f IS NULL)
-  	AND (LOWER(:i) = LOWER(FIRSTNAME) OR :i IS NULL)
-  	AND (LOWER(:o) = LOWER(LASTNAME) OR :o IS NULL)
+    AND (:r IS NULL OR PREGNANCY_COUNTER <= :r)
+    AND (:snils IS NULL OR :snils = SNILS11)
+  	AND (:f IS NULL OR LOWER(:f) = LOWER(SURNAME))
+  	AND (:i IS NULL OR LOWER(:i) = LOWER(FIRSTNAME))
+  	AND (:o IS NULL OR LOWER(:o) = LOWER(LASTNAME))
+  	AND (:dr IS NULL OR TO_DATE(:dr, 'DD.MM.YYYY') = BIRTHDATE)
 )
 SELECT
       ROWNUM

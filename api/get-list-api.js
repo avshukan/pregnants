@@ -21,7 +21,16 @@ async function getListApi({r = '', snils = '', f = '', i = '', o = '', dr = '', 
       password: ORACLE_DB_PASS,
     });
     const selectQuery = await getQuery(sqlScript);
-    const binds = {r, snils, f, i, o, limit};
+    const binds = {
+      r,
+      snils: snils.replace(/\D/g, ''),
+      f,
+      i,
+      o,
+      dr,
+      limit,
+    };
+    console.log('binds', binds);
     const selectResult = await connection.execute(selectQuery, binds);
     console.log('selectResult', selectResult);
     result = selectResult.rows;

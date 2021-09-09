@@ -48,7 +48,7 @@ function resetOnClick(event) {
   form.elements['f'].value = '';
   form.elements['i'].value = '';
   form.elements['o'].value = '';
-  form.elements['dr'].value = '';у
+  form.elements['dr'].value = '';
 }
 
 async function getPersonInfo(snils, f, i, o, dr) {
