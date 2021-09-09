@@ -11,34 +11,35 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" style="min-width: 160px;">СНИЛС</span>
                     </div>
-                    <input name="snils" type="text" class="form-control">
+                    <input id="snils" name="snils" type="text" class="form-control">
                 </div>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text" style="min-width: 160px;">Фамилия</span>
                     </div>
-                    <input name="f" type="text" class="form-control">
+                    <input id="f" name="f" type="text" class="form-control">
                 </div>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text" style="min-width: 160px;">Имя</span>
                     </div>
-                    <input name="i" type="text" class="form-control" value="Влада">
+                    <input id="i" name="i" type="text" class="form-control" value="Елена">
                 </div>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text" style="min-width: 160px;">Отчество</span>
                     </div>
-                    <input name="o" type="text" class="form-control">
+                    <input id="o" name="o" type="text" class="form-control" value="Андреевна">
                 </div>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text" style="min-width: 160px;">Дата рождения</span>
                     </div>
-                    <input name="dr" type="text" class="form-control" disabled>
+                    <input id="dr" name="dr" type="text" class="form-control">
                 </div>
                 <div class="panel-body">
                     <button type="submit" class="btn btn-sm btn-primary">Найти</button>
+                    <a id="download" class="btn btn-sm btn-primary">Скачать xlsx</a>
                     <a id="reset" class="btn btn-sm btn-primary">Очистить</a>
                 </div>
             </div>
@@ -82,8 +83,15 @@
 <!-- Подключаем скрипт получения информации по api -->
 <script src="getPersonInfo.js"></script>
 <script>
-    // отправка формы
-    document.forms["getPersonInfo"].addEventListener("submit", findListener);
-    // сброс значений формы
-    document.getElementById("reset").onclick = resetOnClick;
+    $(document).ready(function() {
+        // отправка формы
+        document.forms["getPersonInfo"].addEventListener("submit", findListener);
+        // скачивание xlsx-файла
+        document.getElementById("download").onclick = downloadOnClick;
+        // сброс значений формы
+        document.getElementById("reset").onclick = resetOnClick;
+        // применяем маску ввода для СНИЛС
+        $("#snils").mask("999-999-999 99");
+        $("#dr").mask("99.99.9999");
+    });
 </script>
