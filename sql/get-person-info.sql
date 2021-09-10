@@ -58,7 +58,7 @@ supertable AS (
       || SUBSTR(TO_CHAR(SNILS), 4, 3)  || '-'
       || SUBSTR(TO_CHAR(SNILS), 7, 3)  || ' '
       || SUBSTR(TO_CHAR(SNILS), 10, 2)
-      ) AS SNILS   															-- СНИЛС
+      ) AS SNILS   															                            -- СНИЛС
     , CASE
   	    WHEN pregnancy.REG_DATE - pregnancy.BEGIN_DATE <= 12*7
   	      THEN 'ДА'
@@ -120,33 +120,33 @@ resulttable AS (
     , LASTNAME					-- Отчество беременной
     , BIRTHDATE					-- ДР беременной
 --  , ENP				  		-- ЕНП
-    , SNILS11 					-- СНИЛС как 11 символов
-    , SNILS   					-- СНИЛС
-    , EARLY_FACT               -- Факт постановки на учёт на ранних сроках
-    , GESTATIONAL_AGE_IN_DAYS  -- Cрок в днях на момент заведения карты
+    , SNILS11 					       -- СНИЛС как 11 символов
+    , SNILS   					       -- СНИЛС
+    , EARLY_FACT				       -- Факт постановки на учёт на ранних сроках
+    , GESTATIONAL_AGE_IN_DAYS	 -- Cрок в днях на момент заведения карты
     , GESTATIONAL_AGE_IN_WEEKS -- Cрок в неделях на момент заведения карты
-    , REG_DATE                 -- Дата постановки на учёт
-    , CARD_DATE_START          -- Дата открытия карты беременной
-    , CARD_DATE_END				-- Дата закрытия карты беременной
-    , PREGNANCY_DATE_START		-- Дата начала срока
-    , PREGNANCY_DATE_END		-- Дата окончания срока
-    , PLAN_DATE_END				-- Плановая дата окончания срока
-    , REASON  	                -- Причина закрытия индивидуальной карты
+    , REG_DATE		             -- Дата постановки на учёт
+    , CARD_DATE_START		       -- Дата открытия карты беременной
+    , CARD_DATE_END				     -- Дата закрытия карты беременной
+    , PREGNANCY_DATE_START		 -- Дата начала срока
+    , PREGNANCY_DATE_END       -- Дата окончания срока
+    , PLAN_DATE_END            -- Плановая дата окончания срока
+    , REASON  	               -- Причина закрытия индивидуальной карты
     , PO_NAME					-- Исход беременности
     , LPU_NAME      			-- ЛПУ
     , VISIT_INFO 				-- Неделя посещения
     , DOC       				-- Паспорт
     , CONTACTS_LIST             -- Контакты (телефоны)
   FROM supertable
-  -- WHERE rownumber = 1 -- последняя беременность
+  WHERE rownumber = 1 -- последняя беременность
 )
 SELECT
       ROWNUM
+    , resulttable.SNILS
     , SURNAME
     , FIRSTNAME
     , LASTNAME
     , BIRTHDATE
-    , resulttable.SNILS
     , EARLY_FACT
     , GESTATIONAL_AGE_IN_DAYS
     , GESTATIONAL_AGE_IN_WEEKS
@@ -165,5 +165,8 @@ SELECT
 FROM resulttable
 WHERE 1 = 1
   -- AND ROWNUM < 5
-  AND SURNAME IS NOT NULL
+  AND (:snils = SNILS11 OR :snils IS NULL)
+  AND (LOWER(:f) = LOWER(SURNAME) OR :f = '' OR :f IS NULL)
+  AND (LOWER(:i) = LOWER(FIRSTNAME) OR :i = '' OR :i IS NULL)
+  AND (LOWER(:o) = LOWER(LASTNAME) OR :o = '' OR :o IS NULL)
 ORDER BY 1, 2, 3, 4, 5

@@ -1,6 +1,6 @@
 'use strict';
-const HEADER_ROWS_COUNT = 5;
-const SIDE_COLS_COUNT = 6;
+const HEADER_ROWS_COUNT = 0;
+const SIDE_COLS_COUNT = 1;
 const express = require('express');
 const router = express.Router();
 const path = require('path');
@@ -14,14 +14,13 @@ const {
   ORACLE_DB_NAME,
   ORACLE_DB_USER,
   ORACLE_DB_PASS,
-  // AUTH_CODE,
 } = process.env;
 
 router.get('/', showForm);
 router.post('/', processFile);
 
 function showForm(req, res, next) {
-  const hbs = path.join('.', 'process-pfr-file.hbs');
+  const hbs = path.join('.', 'process-snils-list.hbs');
   res.render(hbs);
 }
 
@@ -44,7 +43,7 @@ async function processFile(req, res, next) {
       user: ORACLE_DB_USER,
       password: ORACLE_DB_PASS,
     });
-    const result = await processPfrData(filename, connection);
+    const result = await processSnilsList(filename, connection);
     res.attachment('result.xlsx');
     res.send(result);
   } catch (err) {
@@ -65,26 +64,28 @@ async function processFile(req, res, next) {
   next();
 }
 
-async function processPfrData(filename, connection) {
+async function processSnilsList(filename, connection) {
   const workbook = new exceljs.Workbook();
   await workbook.xlsx.readFile(path.join('uploads', filename));
   const worksheet = workbook.getWorksheet(1);
   worksheet.name = filename;
-  await putPfrDataFromSheetToDB(worksheet, connection);
-  await putPfrDataFromDBToSheet(connection, worksheet);
+  await putSnilsDataFromSheetToDB(worksheet, connection);
+  await putSnilsDataFromDBToSheet(connection, worksheet);
   const buffer = await workbook.xlsx.writeBuffer();
   return buffer;
 }
 
-async function putPfrDataFromSheetToDB(worksheet, connection) {
+async function putSnilsDataFromSheetToDB(worksheet, connection) {
   const insertQuery = await getQuery('insert-into-from_pfr.sql');
   const binds = [];
   worksheet.eachRow(function(row, rowNumber) {
     if (rowNumber > HEADER_ROWS_COUNT) {
+      const snils = `${row.getCell(1).value}`;
+      // const snils = `${row.getCell(1).value}`.replace(/\D/g, '');
       binds.push({
         load_filename: worksheet.name,
         row_id: rowNumber,
-        snils: `${row.getCell(5).value}`,
+        snils: snils,
       });
     }
   });
@@ -96,58 +97,52 @@ async function putPfrDataFromSheetToDB(worksheet, connection) {
       snils: { type: oracledb.STRING, maxSize: 20 },
     },
   };
-  console.log('insertQuery', insertQuery);
-  console.log('binds', binds);
-  console.log('options', options);
+  // console.log('insertQuery', insertQuery);
+  // console.log('binds', binds);
+  // console.log('options', options);
   const insertResult = await connection.executeMany(insertQuery, binds, options);
-  console.log('Inserted rows:', insertResult);
+  // console.log('Inserted rows:', insertResult);
   return insertResult;
 }
 
-async function putPfrDataFromDBToSheet(connection, worksheet) {
+async function putSnilsDataFromDBToSheet(connection, worksheet) {
   const columns = [
     '№',
-    'Фамилия беременной',
-    'Имя беременной',
-    'Отчество беременной',
-    'ДР беременной',
     'СНИЛС',
-    'Факт постановки на учёт на ранних сроках',
-    'Cрок в днях на момент заведения карты',
-    'Cрок в неделях на момент заведения карты',
+    'Фамилия',
+    'Имя',
+    'Отчество',
+    'ДР',
+    'Место рождения',
+    'Документы',
+    'Место регистрации',
+    'Место фактического проживания',
     'Дата постановки на учёт',
-    'Дата открытия карты беременной',
-    'Дата закрытия карты беременной',
-    'Дата начала срока',
-    'Дата окончания срока',
+    'Срок 12 недель',
     'Плановая дата окончания срока',
-    'Причина закрытия индивидуальной карты',
+    // 'Дата снятия с учёта',
+    'Дата окончания срока',
     'Исход беременности',
-    'ЛПУ',
-    'Неделя посещения',
+    'Контакты',
+    'Отметка о согласии в соответствии с п.13 Соглашения',
+    'Отметка о согласии в соответствии с п.14 Соглашения',
+    'Отметка о согласии в соответствии с п.15 Соглашения',
   ];
-  const selectQuery = await getQuery('select-from_pfr-by-filename.sql');
+  const selectQuery = await getQuery('get-pregnants-by-snils-list.sql');
   const selectResult = await connection.execute(selectQuery, [worksheet.name]);
-  worksheet.spliceRows(1, HEADER_ROWS_COUNT, []);
+  if (HEADER_ROWS_COUNT > 0){
+    worksheet.spliceRows(1, HEADER_ROWS_COUNT, []);
+  }
   const header = worksheet.getRow(1);
-  header.getCell(1).value = '№';
-  header.getCell(2).value = 'Фамилия';
-  header.getCell(3).value = 'Имя';
-  header.getCell(4).value = 	'Отчество';
-  header.getCell(5).value = 'СНИЛС';
-  header.getCell(6).value = 'Медицинская организация';
   columns.forEach((item, index) => {
-    if (index > 0) {
-      header.getCell(index + SIDE_COLS_COUNT).value = item;
-      worksheet.getColumn(index + SIDE_COLS_COUNT).width = 15;
-    }
+    header.getCell(index + SIDE_COLS_COUNT).value = item;
+    worksheet.getColumn(index + SIDE_COLS_COUNT).width = 20;
   });
   selectResult.rows.forEach((row, row_index) => {
     columns.forEach((col, col_index) => {
-      if (col_index > 0)
-        worksheet
-          .getRow(row_index + 2)
-          .getCell(col_index + SIDE_COLS_COUNT).value = row[col_index];
+      worksheet
+        .getRow(row_index + 2)
+        .getCell(col_index + SIDE_COLS_COUNT).value = row[col_index];
     });
   });
   for (let row = 1; row <= selectResult.rows.length + 1; row = row + 1){

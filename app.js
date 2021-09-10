@@ -13,10 +13,13 @@ const multerUploader = multer({dest});
 
 const app = express();
 const {
+  defaultRouter,
   pregnantsInfoRouter,
+  processSnilsListRouter,
   processFileRouter,
   processPfrFileRouter,
   getPregnantsRouter,
+  getPersonInfoRouter,
 } = require('./routes');
 
 app.use(logger(
@@ -24,8 +27,13 @@ app.use(logger(
 ));
 app.use(express.static('node_modules/bootstrap/dist'));
 app.use(express.static('node_modules/jquery/dist'));
+app.use(express.static('node_modules/jquery.maskedinput/src'));
+app.use(express.static('scripts'));
+app.use('/', defaultRouter);
 app.use('/info', pregnantsInfoRouter);
+app.use('/get-person-info', getPersonInfoRouter);
 app.use('/get-pregnants-list', getPregnantsRouter);
+app.use('/process-snils-list', multerUploader.single('filedata'), processSnilsListRouter);
 app.use('/process-file', multerUploader.single('filedata'), processFileRouter);
 app.use('/process-pfr-file', multerUploader.single('filedata'), processPfrFileRouter);
 

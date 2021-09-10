@@ -1,0 +1,97 @@
+<div class="container-md">
+    <div class="row my-1">
+        <div class="col text-center p-3">
+            <h3>Поиск по СНИЛС и ФИО</h3>
+        </div>
+    </div>
+    <form name="getPersonInfo" action="" method="post" enctype="multipart/form-data">
+        <div class="row my-1">
+            <div class="col border border-primary p-3 text-center">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="min-width: 160px;">СНИЛС</span>
+                    </div>
+                    <input id="snils" name="snils" type="text" class="form-control">
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="min-width: 160px;">Фамилия</span>
+                    </div>
+                    <input id="f" name="f" type="text" class="form-control">
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="min-width: 160px;">Имя</span>
+                    </div>
+                    <input id="i" name="i" type="text" class="form-control" value="">
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="min-width: 160px;">Отчество</span>
+                    </div>
+                    <input id="o" name="o" type="text" class="form-control" value="">
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="min-width: 160px;">Дата рождения</span>
+                    </div>
+                    <input id="dr" name="dr" type="text" class="form-control">
+                </div>
+                <div class="panel-body">
+                    <button type="submit" class="btn btn-sm btn-primary">Найти</button>
+                    <a id="download" class="btn btn-sm btn-primary">Скачать xlsx</a>
+                    <a id="reset" class="btn btn-sm btn-primary">Очистить</a>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row my-1">
+        <div class="col border border-primary p-3 text-center">
+            <table id='data' class="table table-condensed table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>СНИЛС</th>
+                        <th>Фамилия</th>
+                        <th>Имя</th>
+                        <th>Отчество</th>
+                        <th>Дата рождения</th>
+                        <th>Подробно</th>
+                        {{!-- <th>Факт постановки на учёт на ранних сроках</th>
+                        <th>Cрок в днях на момент заведения карты</th>
+                        <th>Cрок в неделях на момент заведения карты</th>
+                        <th>Дата открытия карты беременной</th>
+                        <th>Дата закрытия карты беременной</th>
+                        <th>Дата начала срока</th>
+                        <th>Дата окончания срока</th>
+                        <th>Плановая дата окончания срока</th>
+                        <th>Причина закрытия индивидуальной карты</th>
+                        <th>Исход беременности</th>
+                        <th>ЛПУ</th>
+                        <th>Неделя посещения</th>
+                        <th>Паспорт</th>
+                        <th>Контакты (телефоны)</th> --}}
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Подключаем скрипт получения информации по api -->
+<script src="getPersonInfo.js"></script>
+<script>
+    $(document).ready(function() {
+        // отправка формы
+        document.forms["getPersonInfo"].addEventListener("submit", findListener);
+        // скачивание xlsx-файла
+        document.getElementById("download").onclick = downloadOnClick;
+        // сброс значений формы
+        document.getElementById("reset").onclick = resetOnClick;
+        // применяем маску ввода для СНИЛС
+        $("#snils").mask("999-999-999 99");
+        $("#dr").mask("99.99.9999");
+    });
+</script>

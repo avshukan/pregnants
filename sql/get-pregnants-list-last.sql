@@ -60,13 +60,13 @@ supertable AS (
       || SUBSTR(TO_CHAR(SNILS), 10, 2)
       ) AS SNILS   															-- СНИЛС
     , CASE
-  	    WHEN card.DATE_IN - pregnancy.BEGIN_DATE <= 12*7
+  	    WHEN pregnancy.REG_DATE - pregnancy.BEGIN_DATE <= 12*7
   	      THEN 'ДА'
   	    ELSE 'НЕТ'
-      END AS EARLY_FACT														-- Факт постановки на учёт на ранних сроках                                                -- Факт постановки на учёт на ранних сроках
-    , card.DATE_IN - pregnancy.BEGIN_DATE AS GESTATIONAL_AGE_IN_DAYS        -- Cрок в днях на момент заведения карты
-    , 1 + TRUNC((card.DATE_IN - pregnancy.BEGIN_DATE)/7)
-        AS GESTATIONAL_AGE_IN_WEEKS                                         -- Cрок в неделях на момент заведения карты
+      END AS EARLY_FACT														                          -- Факт постановки на учёт на ранних сроках
+    , pregnancy.REG_DATE - pregnancy.BEGIN_DATE AS GESTATIONAL_AGE_IN_DAYS	-- Cрок в днях на момент заведения карты
+    , 1 + TRUNC((pregnancy.REG_DATE - pregnancy.BEGIN_DATE)/7) AS GESTATIONAL_AGE_IN_WEEKS		-- Cрок в неделях на момент заведения карты
+    , TO_CHAR(pregnancy.REG_DATE, 'DD.MM.YYYY') AS REG_DATE		              -- Дата постановки на учёт
     , TO_CHAR(card.DATE_IN, 'DD.MM.YYYY') AS CARD_DATE_START                -- Дата открытия карты беременной
     , TO_CHAR(card.DATE_OUT, 'DD.MM.YYYY') AS CARD_DATE_END                 -- Дата закрытия карты беременной
     , TO_CHAR(pregnancy.BEGIN_DATE, 'DD.MM.YYYY') AS PREGNANCY_DATE_START   -- Дата начала срока
@@ -125,6 +125,7 @@ resulttable AS (
     , EARLY_FACT				-- Факт постановки на учёт на ранних сроках
     , GESTATIONAL_AGE_IN_DAYS	-- Cрок в днях на момент заведения карты
     , GESTATIONAL_AGE_IN_WEEKS	-- Cрок в неделях на момент заведения карты
+    , REG_DATE		            -- Дата постановки на учёт
     , CARD_DATE_START		    -- Дата открытия карты беременной
     , CARD_DATE_END				-- Дата закрытия карты беременной
     , PREGNANCY_DATE_START		-- Дата начала срока
@@ -149,6 +150,7 @@ SELECT
     , EARLY_FACT
     , GESTATIONAL_AGE_IN_DAYS
     , GESTATIONAL_AGE_IN_WEEKS
+    , REG_DATE
     , CARD_DATE_START
     , CARD_DATE_END
     , PREGNANCY_DATE_START
