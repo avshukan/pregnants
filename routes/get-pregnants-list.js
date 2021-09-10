@@ -79,7 +79,6 @@ const xlsxHandler = (respond) => async(data) => {
   });
   data.forEach((row, row_index) => {
     columns.forEach((col, col_index) => {
-      console.log('row[col_index];', row[col_index]);
       worksheet.getRow(row_index + 2).getCell(col_index + 1).value = row[col_index];
     });
   });
