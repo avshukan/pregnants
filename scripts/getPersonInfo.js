@@ -38,7 +38,7 @@ function downloadOnClick(event) {
   const i = form.elements['i'].value;
   const o = form.elements['o'].value;
   const dr = form.elements['dr'].value;
-  const url = `/get-pregnants-list/xlsx?snils=${snils}&f=${f}&i=${i}&o=${o}&dr=${dr}`;
+  const url = `get-pregnants-list/xlsx?snils=${snils}&f=${f}&i=${i}&o=${o}&dr=${dr}`;
   window.open(url, '_blank').focus();
 }
 
@@ -54,7 +54,7 @@ function resetOnClick(event) {
 }
 
 async function getPersonInfo(snils, f, i, o, dr) {
-  const url = `/get-person-info/api?snils=${snils}&f=${f}&i=${i}&o=${o}&dr=${dr}`;
+  const url = `get-person-info/api?snils=${snils}&f=${f}&i=${i}&o=${o}&dr=${dr}`;
   const response = await fetch(url, {
     method: 'GET',
     headers: { Accept: 'application/json' },
