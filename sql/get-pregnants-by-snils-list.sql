@@ -108,7 +108,7 @@ supertable AS (
     , TO_CHAR(pregnancy.BEGIN_DATE + 7*12, 'DD.MM.YYYY') AS PREGNANCY_WEEK_12 -- Срок 12 недель
     , TO_CHAR(pregnancy.PLAN_END_DATE, 'DD.MM.YYYY') AS PLAN_DATE_END         -- Плановая дата окончания срока
 --    , reason.NAME AS REASON                                                   -- Причина закрытия индивидуальной карты
---    , po.PO_NAME                                                              -- Исход беременности
+    , po.PO_NAME                                                              -- Исход беременности
     , lpu.LPU_NAME                                                            -- ЛПУ
 --    , pregnancy_weeks.VISIT_INFO AS VISIT_INFO                                -- Информация о посещениях
     , docs.DOC                                                                -- Паспорт
@@ -122,8 +122,8 @@ supertable AS (
     ON pregnancy.id = card.PREGNANCY
 --  LEFT JOIN D_PREGC_OUT_REASONS reason
 --    ON reason.ID = card.OUT_REASON
---  LEFT JOIN D_PREGNANCY_OUTCOMES po -- Исходы беременностей (хроникальный)
---    ON po.ID = pregnancy.PREG_OUTCOME
+  LEFT JOIN D_PREGNANCY_OUTCOMES po -- Исходы беременностей (хроникальный)
+    ON po.ID = pregnancy.PREG_OUTCOME
   LEFT JOIN D_LPUDICT lpu
     ON lpu.ID = card.LPU_IN
 --  LEFT JOIN pregnancy_weeks
@@ -152,7 +152,7 @@ resulttable AS (
     , SNILS11                -- СНИЛС как 11 символов
     , SNILS                  -- СНИЛС
     , PREGNANCY_REG_DATE     -- Дата постановки на учёт
-    , '' PREGNANCY_REG_END   -- Дата снятия с учёта
+    -- , '' PREGNANCY_REG_END   -- Дата снятия с учёта
 --    , CARD_DATE_START        -- Дата открытия карты беременной
 --    , CARD_DATE_END          -- Дата закрытия карты беременной
     , PREGNANCY_DATE_START   -- Дата начала срока
@@ -160,7 +160,7 @@ resulttable AS (
     , PREGNANCY_WEEK_12      -- Срок 12 недель
     , PLAN_DATE_END          -- Плановая дата окончания срока
 --    , REASON                 -- Причина закрытия индивидуальной карты
---    , PO_NAME                -- Исход беременности
+    , PO_NAME                -- Исход беременности
 --    , LPU_NAME               -- ЛПУ
 --    , VISIT_INFO             -- Неделя посещения
     , DOC                    -- Паспорт
@@ -193,7 +193,8 @@ SELECT
     , PREGNANCY_REG_DATE
     , PREGNANCY_WEEK_12
     , PLAN_DATE_END
-    , PREGNANCY_REG_END
+    , PREGNANCY_DATE_END
+    , PO_NAME
     , CONTACTS_LIST
     , FLAG13
     , FLAG14
