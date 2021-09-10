@@ -15,6 +15,7 @@ const app = express();
 const {
   defaultRouter,
   pregnantsInfoRouter,
+  processSnilsListRouter,
   processFileRouter,
   processPfrFileRouter,
   getPregnantsRouter,
@@ -32,6 +33,7 @@ app.use('/', defaultRouter);
 app.use('/info', pregnantsInfoRouter);
 app.use('/get-person-info', getPersonInfoRouter);
 app.use('/get-pregnants-list', getPregnantsRouter);
+app.use('/process-snils-list', multerUploader.single('filedata'), processSnilsListRouter);
 app.use('/process-file', multerUploader.single('filedata'), processFileRouter);
 app.use('/process-pfr-file', multerUploader.single('filedata'), processPfrFileRouter);
 
