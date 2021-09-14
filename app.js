@@ -29,6 +29,7 @@ app.use(express.static('node_modules/bootstrap/dist'));
 app.use(express.static('node_modules/jquery/dist'));
 app.use(express.static('node_modules/jquery.maskedinput/src'));
 app.use(express.static('scripts'));
+app.use(express.static('images'));
 app.use('/', defaultRouter);
 app.use('/info', pregnantsInfoRouter);
 app.use('/get-person-info', getPersonInfoRouter);
