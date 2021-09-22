@@ -14,6 +14,7 @@ const multerUploader = multer({dest});
 const app = express();
 const {
   defaultRouter,
+  loginRouter,
   pregnantsInfoRouter,
   processSnilsListRouter,
   processFileRouter,
@@ -31,6 +32,7 @@ app.use(express.static('node_modules/jquery.maskedinput/src'));
 app.use(express.static('scripts'));
 app.use(express.static('images'));
 app.use('/', defaultRouter);
+app.use('/login', loginRouter);
 app.use('/info', pregnantsInfoRouter);
 app.use('/get-person-info', getPersonInfoRouter);
 app.use('/get-pregnants-list', getPregnantsRouter);
