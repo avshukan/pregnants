@@ -68,6 +68,7 @@ const xlsxHandler = (respond) => async(data) => {
     'Отметка о согласии в соответствии с п.13 Соглашения',
     'Отметка о согласии в соответствии с п.14 Соглашения',
     'Отметка о согласии в соответствии с п.15 Соглашения',
+    'Район',
   ];
   const workbook = new exceljs.Workbook();
   const worksheet = workbook.addWorksheet('Preganants List');

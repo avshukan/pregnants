@@ -1,22 +1,53 @@
 WITH
+districts AS (
+  SELECT
+    ID city_id
+  , GEONAME city_name
+  , CASE
+      when kladr_code like ('65000%') then 'Южно-Сахалинск г'
+      when kladr_code like ('65002%') then 'Анивский р-н'
+      when kladr_code like ('65003%') then 'Долинский р-н'
+      when kladr_code like ('65004%') then 'Корсаковский р-н'
+      when kladr_code like ('65005%') then 'Курильский р-н'
+      when kladr_code like ('65006%') then 'Макаровский р-н'
+      when kladr_code like ('65007%') then 'Невельский р-н'
+      when kladr_code like ('65008%') then 'Ногликский р-н'
+      when kladr_code like ('65009%') then 'Охинский р-н'
+      when kladr_code like ('65010%') then 'Поронайский р-н'
+      when kladr_code like ('65011%') then 'Северо-Курильский р-н'
+      when kladr_code like ('65012%') then 'Смирныховский р-н'
+      when kladr_code like ('65013%') then 'Томаринский р-н'
+      when kladr_code like ('65014%') then 'Тымовский р-н'
+      when kladr_code like ('65015%') then 'Углегорский р-н'
+      when kladr_code like ('65016%') then 'Холмский р-н'
+      when kladr_code like ('65017%') then 'Южно-Курильский р-н'
+      when kladr_code like ('65018%') then 'Александровск-Сахалинский р-н'
+      ELSE ''
+    END raion_name
+  FROM DEV.D_GEOGRAFY
+),
 address_details AS (
   SELECT
-      id
-    , pid
+      adr.ID ID
+    , adr.pid PID
     , is_real
-    , (SELECT geoname FROM dev.d_geografy WHERE id=city) city
-    , (SELECT r_name FROM dev.D_RAIONS WHERE id = raion) raion
-    , (SELECT geoname FROM dev.d_geografy WHERE id=street) street
+    , districts.city_name city
+    , districts.raion_name raion
+    , streets.geoname street
     , house
     , houselit
     , block
     , flatlit
     , flat
     , addr_index
-    , BEGIN_date
-    , end_date
-    , ROW_NUMBER () OVER (PARTITION BY pid, is_real ORDER BY begin_date DESC NULLS last) r
-  FROM dev.D_AGENT_ADDRS
+    , adr.BEGIN_date
+    , adr.end_date
+    , ROW_NUMBER () OVER (PARTITION BY adr.pid, adr.is_real ORDER BY adr.begin_date DESC NULLS last) r
+  FROM dev.D_AGENT_ADDRS adr
+  LEFT OUTER JOIN districts
+    ON districts.city_id = adr.city
+  LEFT OUTER JOIN DEV.D_GEOGRAFY streets
+    ON streets.id = adr.street
 --  WHERE is_real = 1
 ),
 address AS (
@@ -27,6 +58,7 @@ address AS (
       || DECODE(STREET, NULL, '', ' ' || STREET)
       || DECODE(HOUSE, NULL, '', ' д.' || HOUSE || HOUSELIT)
       || DECODE(BLOCK, NULL, '', '-' || BLOCK) ADR
+    , raion
   FROM address_details
   WHERE r = 1
 ),
@@ -48,7 +80,6 @@ contacts AS (
   FROM (
     SELECT *
     FROM dev.D_AGENT_CONTACTS
---    WHERE contact NOT LIKE '%@%'
   )
   GROUP BY PID
 ),
@@ -105,6 +136,7 @@ supertable AS (
     , contacts.CONTACTS_LIST                                                  -- Контакты (телефоны)
     , address_r.ADR ADDRESS_REG                                               -- Место регистрации
     , address_f.ADR ADDRESS_FACT                                              -- Место фактического проживания
+    , address_f.RAION RAION                                                   -- Район фактического проживания
   FROM D_PREGNANT_CARDS card
   INNER JOIN D_AGENTS agent
     ON agent.ID = card.AGENT
@@ -158,6 +190,7 @@ resulttable AS (
     , 'НЕТ' FLAG13           -- Отметка о согласии в соответствии с п.13 Соглашения
     , 'НЕТ' FLAG14           -- Отметка о согласии в соответствии с п.14 Соглашения
     , 'НЕТ' FLAG15           -- Отметка о согласии в соответствии с п.15 Соглашения
+    , RAION                  -- Район фактического проживания
   FROM supertable
   WHERE 1 = 1
     AND (SURNAME IS NOT NULL)
@@ -188,6 +221,7 @@ SELECT
     , FLAG13
     , FLAG14
     , FLAG15
+    , RAION
 FROM resulttable
 WHERE 1 = 0
    OR ROWNUM <= :limit
