@@ -127,6 +127,7 @@ async function putSnilsDataFromDBToSheet(connection, worksheet) {
     'Отметка о согласии в соответствии с п.13 Соглашения',
     'Отметка о согласии в соответствии с п.14 Соглашения',
     'Отметка о согласии в соответствии с п.15 Соглашения',
+    'Район',
   ];
   const selectQuery = await getQuery('get-pregnants-by-snils-list.sql');
   const selectResult = await connection.execute(selectQuery, [worksheet.name]);
